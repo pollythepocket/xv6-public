@@ -13,6 +13,7 @@ struct file {
 struct inode {
   uint dev;           // Device number
   uint inum;          // Inode number
+  uint color;         // hw3
   int ref;            // Reference count
   struct sleeplock lock;
   int flags;          // I_VALID
@@ -31,9 +32,11 @@ struct inode {
 struct devsw {
   int (*read)(struct inode*, uint, char*, int);
   int (*write)(struct inode*, uint, char*, int);
+  int (*ioctl)(struct inode*, int, int);
 };
 
 extern struct devsw devsw[];
 
 #define CONSOLE 1
+#define DISPLAY 2
 

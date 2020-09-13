@@ -483,6 +483,19 @@ writei(struct inode *ip, char *src, uint off, uint n)
   return n;
 }
 
+int
+ioctli(struct inode *ip, int cmd, int arg)
+{
+  if(ip->type == T_DEV){
+    if(ip->major >= 0 && ip->major < NDEV && devsw[ip->major].ioctl) {
+      return devsw[ip->major].ioctl(ip, cmd, arg);
+    }
+  }
+  cprintf("Got unknown IOCTL for dev=%d, major=%d, minor=%d, cmd=%d, arg=%d\n",
+      (uint)ip->dev,(int)ip->major,(int)ip->minor,cmd,arg);
+  return -1;
+}
+
 //PAGEBREAK!
 // Directories
 

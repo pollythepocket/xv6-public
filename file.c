@@ -155,3 +155,11 @@ filewrite(struct file *f, char *addr, int n)
   panic("filewrite");
 }
 
+  int
+fileioctl(struct file *f, int cmd, int arg)
+{
+  if(f->type != FD_INODE)
+    return -1;
+
+  return ioctli(f->ip, cmd, arg);
+}

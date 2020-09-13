@@ -319,6 +319,7 @@ sys_open(void)
     end_op();
     return -1;
   }
+  ip->color = 0x7;
   iunlock(ip);
   end_op();
 
@@ -438,4 +439,20 @@ sys_pipe(void)
   fd[0] = fd0;
   fd[1] = fd1;
   return 0;
+}
+
+int
+sys_ioctl(void)
+{
+  int fd, cmd, arg;
+  struct file *f;
+
+  if(argfd(0, &fd, &f) < 0)
+    return -1;
+  if(argint(1, &cmd) < 0)
+    return -1;
+  if(argint(2, &arg) < 0)
+    return -1;
+
+  return fileioctl(f,cmd,arg);
 }
