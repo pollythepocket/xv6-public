@@ -29,7 +29,7 @@ int uptime(void);
 void alarm(int);
 void signal(int,void (*)(int));
 void sigret(void);
-void fgproc(int);
+void fgproc();
 
 // ulib.c
 int stat(char*, struct stat*);
