@@ -42,14 +42,57 @@ iso9660fs_writei(struct inode* ip, char* buf, uint offset, uint count)
   return -1;
 }
 
+/*
+mount iso9660fs cdrom mnt
+Mounting cdrom
+ID matched ISO9660 file system
+Root directory record version 1 len 34 size 2048 at 29, volume size 52328448 block size 526336 set size 16777217.
+Entry: 
+Entry: 
+Entry: BOOT
+Entry: INDEX.HTML;1
+Entry: KNOPPIX
+Entry: LOST_FOUND
+*/
+
   int
 iso9660fs_readi(struct inode* ip, char* dst, uint offset, uint size)
 {
   if ( ip->type == T_DIR ) {
     if(offset==0) {
       struct dirent *de = dst;
-      memmove(de->name,"FAKE.txt",9);
+      memmove(de->name,".", 14);
       de->inum = 1;
+      return sizeof(struct dirent);
+    }
+    else if(offset == sizeof(struct dirent)){
+      struct dirent *de = (struct dirent *)dst;
+      memmove(de->name,"..", 14);
+      de->inum = 2;
+      return sizeof(struct dirent);
+    }
+    else if(offset == 2 * sizeof(struct dirent)){
+      struct dirent *de = (struct dirent *)dst;
+      memmove(de->name,"BOOT", 14);
+      de->inum = 3;
+      return sizeof(struct dirent);
+    }
+    else if(offset == 3 * sizeof(struct dirent)){
+      struct dirent *de = (struct dirent *)dst;
+      memmove(de->name,"INDEX.HTML", 14);
+      de->inum = 4;
+      return sizeof(struct dirent);
+    }
+    else if(offset == 4 * sizeof(struct dirent)){
+      struct dirent *de = (struct dirent *)dst;
+      memmove(de->name,"KNOPPIX", 14);
+      de->inum = 5;
+      return sizeof(struct dirent);
+    }
+    else if(offset == 5 * sizeof(struct dirent)){
+      struct dirent *de = (struct dirent *)dst;
+      memmove(de->name,"LOST_FOUND", 14);
+      de->inum = 6;
       return sizeof(struct dirent);
     }
     else {
